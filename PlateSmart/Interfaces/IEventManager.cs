@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace PlateSmart.Interfaces
 {
-    public interface IHandleImages
+    public interface IEventManager
     {
-        Task<bool> StoreImageInfo(List<AlprEvent> alprEvents);
+        Task StoreImageInfo(List<AlprEvent> alprEvents);
         Task<bool> SaveImage(HttpRequest request, string id);
     }
 }
