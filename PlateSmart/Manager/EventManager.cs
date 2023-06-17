@@ -54,7 +54,7 @@ namespace PlateSmart.Manager
             }
         }
 
-        public async Task<bool> SaveImage(HttpRequest request, string id)
+        public async Task<bool> SaveImage(HttpRequest request, string id, Int64 timeStamp, int width, int height, string category, string correlationId)
         {
             var baseDirectory = $"C:\\Temp\\{id}";
             try

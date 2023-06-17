@@ -29,7 +29,12 @@ namespace PlateSmart.Controllers
             var result = _handleImages.StoreImageInfo(alprEvents);
             if (result.IsCompletedSuccessfully)
             {
-                return Ok(result.IsCompleted);
+                //return Ok(result.IsCompleted);
+                return Accepted(result.IsCompleted);
+            }
+            else if (result.IsCanceled)
+            {
+                return Ok(result);
             }
             else
             {
@@ -37,17 +42,13 @@ namespace PlateSmart.Controllers
             }
         }
 
-        [HttpPost("image/{id}")]
-        [ProducesResponseType(StatusCodes.Status202Accepted)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> PostImage([FromRoute] string id)
+        [HttpPost("image/{id}/{timeStamp}/{width}/{height}/{category}/{correlationId}")]
+        public async Task<IActionResult> PostImage([FromRoute] string id, Int64 timeStamp, int width, int height, string category, string correlationId)
         {
-            if (await _handleImages.SaveImage(Request, id))
-                return Accepted();
+            if (await _handleImages.SaveImage(Request, id, timeStamp, width, height, category, correlationId))
+                return Ok();
             else
                 return BadRequest();
-
-
         }
     }
 }
