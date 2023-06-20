@@ -38,7 +38,7 @@ namespace PlateSmart.Controllers
             }
             else
             {
-                return BadRequest(result.Exception);
+                return BadRequest(result.Exception.Message);
             }
         }
 
