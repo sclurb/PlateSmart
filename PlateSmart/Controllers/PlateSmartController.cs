@@ -23,10 +23,10 @@ namespace PlateSmart.Controllers
         }
 
         [HttpPost("event")]
-        public IActionResult Event([FromBody] List<AlprEvent> alprEvents)
+        public IActionResult Event([FromBody] AlprEvent alprEvent)
         {
 
-            var result = _handleImages.StoreImageInfo(alprEvents);
+            var result = _handleImages.StoreImageInfo(alprEvent);
             if (result.IsCompletedSuccessfully)
             {
                 //return Ok(result.IsCompleted);

@@ -4,47 +4,32 @@ using PlateSmart.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 namespace PlateSmart.Manager
 {
     public class EventManager : IEventManager
     {
-        public Task StoreImageInfo(List<AlprEvent> alprEvents)
+        public Task StoreImageInfo(AlprEvent alprEvent)
         {
             string fileName = "C:\\Temp\\Image.csv";
             try
             {
+                List<string> lines = new List<string>();
                 if (!File.Exists(fileName))
                 {
-                    List<string> lines = new List<string>();
                     string alprHeader = "EventId, Event Type, Event Version, Event TimeStamp, ImageId, Image Width, Image Height, DeviceId, Device type, " +
                                         "SourceId, Source Type, Source Name, PLate Tag, Plate Code, Plate Region X Coordinate, Plate Region Y Coordinate, Plate Region Width, Plate Region Height, " +
                                         "Vehicle Color, Vehicle Make Name, Vehicle Make Code";
                     lines.Add(alprHeader);
-                    foreach (var alpr in alprEvents)
-                    {
-                        string newLine = $"{alpr.Id}, {alpr.ALPR}, {alpr.Version}, {alpr.TimeStamp}, {alpr.Image.Id}, {alpr.Image.Width}," +
-                                        $"{alpr.Image.Height}, {alpr.Device.Id}, {alpr.Device.Type}, {alpr.Source.Id}, {alpr.Source.Type}, {alpr.Source.Name}," +
-                                        $"{alpr.Plate.Tag}, {alpr.Plate.Code}, {alpr.Plate.Region.X}, {alpr.Plate.Region.Y}, {alpr.Plate.Region.Width}, {alpr.Plate.Region.Height}," +
-                                        $"{alpr.Vehicle.Color.Code}, {alpr.Vehicle.Make.Name}, {alpr.Vehicle.Make.Code} ";
-                        lines.Add(newLine);
-                    }
+                    lines.Add(GenerateCSVLine(alprEvent));
                     File.WriteAllLines(fileName, lines);
                 }
                 else
                 {
-                    List<string> newLines = new List<string>();
-                    foreach (var alpr in alprEvents)
-                    {
-                        string newLine = $"{alpr.Id}, {alpr.ALPR}, {alpr.Version}, {alpr.TimeStamp}, {alpr.Image.Id}, {alpr.Image.Width}," +
-                                        $"{alpr.Image.Height}, {alpr.Device.Id}, {alpr.Device.Type}, {alpr.Source.Id}, {alpr.Source.Type}, {alpr.Source.Name}," +
-                                        $"{alpr.Plate.Tag}, {alpr.Plate.Code}, {alpr.Plate.Region.X}, {alpr.Plate.Region.Y}, {alpr.Plate.Region.Width}, {alpr.Plate.Region.Height}," +
-                                        $"{alpr.Vehicle.Color.Code}, {alpr.Vehicle.Make.Name}, {alpr.Vehicle.Make.Code} ";
-                        newLines.Add(newLine);
-
-                    }
-                    File.AppendAllLines(fileName, newLines);
+                    lines.Add(GenerateCSVLine(alprEvent));
+                    File.AppendAllLines(fileName, lines);
                 }
                 return Task.CompletedTask;
             }
@@ -80,6 +65,15 @@ namespace PlateSmart.Manager
                 return await Task.FromResult(false);
             }
 
+        }
+
+        private string GenerateCSVLine(AlprEvent alprEvent)
+        {
+            string csvLine = $"{alprEvent.Id}, {alprEvent.ALPR}, {alprEvent.Version}, {alprEvent.TimeStamp}, {alprEvent.Image.Id}, {alprEvent.Image.Width}," +
+                $"{alprEvent.Image.Height}, {alprEvent.Device.Id}, {alprEvent.Device.Type}, {alprEvent.Source.Id}, {alprEvent.Source.Type}, {alprEvent.Source.Name}," +
+                $"{alprEvent.Plate.Tag}, {alprEvent.Plate.Code}, {alprEvent.Plate.Region.X}, {alprEvent.Plate.Region.Y}, {alprEvent.Plate.Region.Width}, {alprEvent.Plate.Region.Height}," +
+                $"{alprEvent.Vehicle.Color.Code}, {alprEvent.Vehicle.Make.Name}, {alprEvent.Vehicle.Make.Code} ";
+            return csvLine;
         }
     }
 }
